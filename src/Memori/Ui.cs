@@ -1,5 +1,7 @@
 ﻿using Spectre.Console;
 
+namespace Memori;
+
 static class Ui
 {
     public static void ShowHeader()
