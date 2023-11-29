@@ -1,4 +1,6 @@
 using Memori.ApiService;
+using Memori.ApiService.Data;
+using Memori.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,9 +10,17 @@ builder.AddServiceDefaults();
 // Add services to the container.
 builder.Services.AddProblemDetails();
 
-builder.AddSqlServerDbContext<DatabaseContext>("sql");
+builder.AddSqlServerDbContext<DatabaseContext>(Constants.SqlServerDatabase);
+
+builder.Services.AddTransient<DataMigrationJob>();
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var job = scope.ServiceProvider.GetRequiredService<DataMigrationJob>();
+    await job.RunAsync();
+}
 
 // Configure the HTTP request pipeline.
 app.UseExceptionHandler();

@@ -1,3 +1,7 @@
+using Memori.ServiceDefaults;
+using Microsoft.EntityFrameworkCore.Design;
+using Microsoft.EntityFrameworkCore;
+
 var builder = DistributedApplication.CreateBuilder(args);
 
 var sql = builder
@@ -15,12 +19,3 @@ builder
 builder.Build().Run();
 
 
-static class Constants
-{
-    public const string SqlServer = "sql";
-    public const string SqlServerDatabase = "MemoriData";
-    public const string SqlPassword = "SecurePass123*";
-
-    public const string ApiService = "apiservice";
-    public const string WebFrontend = "webfrontend";
-}
