@@ -2,13 +2,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34310.174
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memori.AppHost", "Memori.AppHost\Memori.AppHost.csproj", "{820D8485-91EA-4F65-9698-A01A6A1A2754}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memori.AppHost", "src\Memori.AppHost\Memori.AppHost.csproj", "{820D8485-91EA-4F65-9698-A01A6A1A2754}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memori.ServiceDefaults", "Memori.ServiceDefaults\Memori.ServiceDefaults.csproj", "{5AAFED6D-F730-4E5C-8820-6BEDFF563440}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memori.ServiceDefaults", "src\Memori.ServiceDefaults\Memori.ServiceDefaults.csproj", "{5AAFED6D-F730-4E5C-8820-6BEDFF563440}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memori.ApiService", "Memori.ApiService\Memori.ApiService.csproj", "{720B1548-0BD6-4C79-B8E5-94304DCCC7F4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memori.ApiService", "src\Memori.ApiService\Memori.ApiService.csproj", "{720B1548-0BD6-4C79-B8E5-94304DCCC7F4}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memori.Web", "Memori.Web\Memori.Web.csproj", "{84F436A6-2256-4AF2-91B1-8FC4A55048C6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memori.Web", "src\Memori.Web\Memori.Web.csproj", "{84F436A6-2256-4AF2-91B1-8FC4A55048C6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
