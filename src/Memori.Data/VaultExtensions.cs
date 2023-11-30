@@ -8,4 +8,11 @@ public static class VaultExtensions
 
         return vault;
     }
+
+    public static async Task<List<Vault>> FindAllVaultsAsync(this DatabaseContext database)
+    {
+        var vaults = await database.Vaults.ToListAsync();
+
+        return vaults;
+    }
 }

@@ -1,8 +1,7 @@
 using Memori.ApiService.Jobs;
-using Memori.ServiceDefaults;
-using Memori.Processing;
-using Microsoft.AspNetCore.Mvc;
 using Memori.Data;
+using Memori.Processing;
+using Memori.ServiceDefaults;
 
 Console.WriteLine("Current directory: " + Directory.GetCurrentDirectory());
 
@@ -69,10 +68,10 @@ app.MapGet(
 );
 
 
-app.MapPost("/import", (ProcessingManagerBackgroundService processingManager) =>
+app.MapPost("/import", (IProcessingManagerBackgroundService processingManager) =>
 {
-    var success = processingManager.RequestJob(new VaulProcessingJobDescription("VAULT01"));
- 
+    var success = processingManager.RequestJob(new ProcessAllVaultsJobDescription());
+
     if (!success)
     {
         return Results.Problem("The request was not accepted.");

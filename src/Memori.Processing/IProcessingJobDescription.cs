@@ -1,3 +1,5 @@
 ﻿namespace Memori.Processing;
 
-public interface IProcessingJobDescription { }
+public interface IProcessingJobDescription
+{
+}

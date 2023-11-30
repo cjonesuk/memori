@@ -8,6 +8,7 @@ public static class Extensions
     public static IServiceCollection AddProcessingManager(this IServiceCollection services)
     {
         services.AddSingleton<ProcessingManagerBackgroundService>();
+        services.AddSingleton<IProcessingManagerBackgroundService>(serviceProvider => serviceProvider.GetRequiredService<ProcessingManagerBackgroundService>());
         services.AddSingleton<IHostedService, ProcessingManagerBackgroundService>(
                    serviceProvider => serviceProvider.GetRequiredService<ProcessingManagerBackgroundService>());
 

@@ -5,46 +5,61 @@ using System.Threading.Channels;
 
 namespace Memori.Processing;
 
-public sealed class ProcessingManagerBackgroundService : BackgroundService
+public sealed class ProcessingManagerBackgroundService : BackgroundService, IProcessingManagerBackgroundService
 {
     private readonly ILogger _logger;
+    private readonly ILogger _requestLogger;
     private readonly IServiceProvider _serviceProvider;
-    private readonly Channel<IProcessingJobDescription> _requests;
+    private readonly Channel<JobRequest> _requests;
 
-    public ProcessingManagerBackgroundService(ILogger<ProcessingManagerBackgroundService> logger, IServiceProvider serviceProvider)
+    public ProcessingManagerBackgroundService(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
     {
-        _logger = logger;
+        _logger = loggerFactory.CreateLogger<ProcessingManagerBackgroundService>();
+        _requestLogger = loggerFactory.CreateLogger<ProcessingManagerBackgroundService>();
         _serviceProvider = serviceProvider;
-        _requests = Channel.CreateUnbounded<IProcessingJobDescription>();
+        _requests = Channel.CreateUnbounded<JobRequest>();
     }
 
     public bool RequestJob(IProcessingJobDescription jobDescription)
     {
-        return _requests.Writer.TryWrite(jobDescription);
+        var request = new JobRequest(Guid.NewGuid(), jobDescription);
+
+        _requestLogger.LogJobRequest(request.JobRequestId);
+
+        var success = _requests.Writer.TryWrite(request);
+
+        if (!success)
+        {
+            _requestLogger.LogJobRequestError(request);
+        }
+
+        return success;
     }
 
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _logger.LogInformation("Processing background service is running.");
+        _logger.LogInformation("Processing background manager service is now running.");
 
         await foreach (var request in _requests.Reader.ReadAllAsync(stoppingToken))
         {
+            _logger.BeginScoped(("JobRequestId", request.JobRequestId), ("JobRequestDescriptionType", request.Description.GetType().Name));
+
             try
             {
-                if (request is VaulProcessingJobDescription vaultProcessingJobDescription)
+                switch (request.Description)
                 {
-                    _logger.LogInformation($"Processing vault {vaultProcessingJobDescription.VaultId}...");
+                    case VaultProcessingJobDescription job:
+                        await RunVaultProcessingJob(job);
+                        break;
 
-                    using var scope = _serviceProvider.CreateScope();
+                    case ProcessAllVaultsJobDescription job:
+                        await ProcessAllVaults(job);
+                        break;
 
-                    var job = ActivatorUtilities.CreateInstance<ProcessingJob>(scope.ServiceProvider, vaultProcessingJobDescription);
-
-                    await job.RunAsync();
-                }
-                else
-                {
-                    _logger.LogWarning($"Unknown job description type {request.GetType().Name}.");
+                    default:
+                        _logger.LogWarning($"Unknown job description type {request.GetType().Name}.");
+                        break;
                 }
             }
             catch (Exception e)
@@ -52,5 +67,23 @@ public sealed class ProcessingManagerBackgroundService : BackgroundService
                 _logger.LogError(e, "An unhandled exception occurred");
             }
         }
+    }
+
+    private async Task ProcessAllVaults(ProcessAllVaultsJobDescription description)
+    {
+        using var scope = _serviceProvider.CreateScope();
+
+        var job = ActivatorUtilities.CreateInstance<ProcessAllVaultsJob>(scope.ServiceProvider, description);
+
+        await job.RunAsync();
+    }
+
+    private async Task RunVaultProcessingJob(VaultProcessingJobDescription description)
+    {
+        using var scope = _serviceProvider.CreateScope();
+
+        var job = ActivatorUtilities.CreateInstance<ProcessingJob>(scope.ServiceProvider, description);
+
+        await job.RunAsync();
     }
 }

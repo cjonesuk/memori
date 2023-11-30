@@ -6,10 +6,10 @@ namespace Memori.Processing;
 public sealed class ProcessingJob
 {
     private readonly ILogger _logger;
-    private readonly VaulProcessingJobDescription _description;
+    private readonly VaultProcessingJobDescription _description;
     private readonly DatabaseContext _database;
 
-    public ProcessingJob(ILogger<ProcessingJob> logger, VaulProcessingJobDescription description, DatabaseContext database)
+    public ProcessingJob(ILogger<ProcessingJob> logger, VaultProcessingJobDescription description, DatabaseContext database)
     {
         _logger = logger;
         _description = description;
@@ -18,7 +18,8 @@ public sealed class ProcessingJob
 
     public async Task RunAsync()
     {
-        using (_logger.BeginScope(_description))
+        using var scope = _logger.BeginScope(_description);
+
         {
             _logger.LogInformation($"Processing job is running...");
 
