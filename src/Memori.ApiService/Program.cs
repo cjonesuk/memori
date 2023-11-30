@@ -1,6 +1,11 @@
 using Memori.ApiService;
-using Memori.ApiService.Data;
+using Memori.ApiService.Jobs;
 using Memori.ServiceDefaults;
+using Memori.Processing;
+using Microsoft.AspNetCore.Mvc;
+
+Console.WriteLine("Current directory: " + Directory.GetCurrentDirectory());
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +18,11 @@ builder.Services.AddProblemDetails();
 builder.AddSqlServerDbContext<DatabaseContext>(Constants.SqlServerDatabase);
 
 builder.Services.AddTransient<DataMigrationJob>();
+
+builder.Services.AddProcessingManager();
+
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -57,6 +67,25 @@ app.MapGet(
         return forecast;
     }
 );
+
+
+app.MapPost("/import", (ProcessingManagerBackgroundService processingManager) =>
+{
+    var success = processingManager.RequestJob(new VaulProcessingJobDescription("VAULT01"));
+ 
+    if (!success)
+    {
+        return Results.Problem("The request was not accepted.");
+    }
+
+    return Results.Accepted();
+});//.Produces<ProblemDetails>(StatusCodes.Status202Accepted, "The request has been accepted for processing but the processing has not been completed.");
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.MapDefaultEndpoints();
 

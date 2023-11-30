@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 
-namespace Memori.ApiService.Data;
+namespace Memori.ApiService.Jobs;
 
 public sealed class DataMigrationJob
 {
@@ -27,14 +27,14 @@ public sealed class DataMigrationJob
         {
             _logger.LogInformation("Seeding the database...");
 
-            var vault01Id = Guid.NewGuid().ToString();
-            var userId = Guid.NewGuid().ToString();
+            var vault01Id = "VAULT01".ToString();
+            var userId = "USER01".ToString();
 
             var vault01 = new Vault
             {
                 Id = vault01Id,
                 Name = "My Vault 01",
-                OriginalsPath = "../data/animals",
+                OriginalsPath = "../../data/animals",
                 ImportPath = null
             };
 
