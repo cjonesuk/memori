@@ -32,7 +32,7 @@ public sealed class ProcessAllVaultsJob
         {
             _logger.LogDebug($"Processing vault {vault.Id}.");
 
-            var jobDescription = new VaultProcessingJobDescription(vault.Id);
+            var jobDescription = new VaultIndexingJobDescription(vault.Id);
 
             var success = _processingManager.RequestJob(jobDescription);
 

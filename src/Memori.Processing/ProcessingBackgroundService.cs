@@ -49,7 +49,7 @@ public sealed class ProcessingManagerBackgroundService : BackgroundService, IPro
             {
                 switch (request.Description)
                 {
-                    case VaultProcessingJobDescription job:
+                    case VaultIndexingJobDescription job:
                         await RunVaultProcessingJob(job);
                         break;
 
@@ -78,11 +78,11 @@ public sealed class ProcessingManagerBackgroundService : BackgroundService, IPro
         await job.RunAsync();
     }
 
-    private async Task RunVaultProcessingJob(VaultProcessingJobDescription description)
+    private async Task RunVaultProcessingJob(VaultIndexingJobDescription description)
     {
         using var scope = _serviceProvider.CreateScope();
 
-        var job = ActivatorUtilities.CreateInstance<ProcessingJob>(scope.ServiceProvider, description);
+        var job = ActivatorUtilities.CreateInstance<VaultIndexingJob>(scope.ServiceProvider, description);
 
         await job.RunAsync();
     }

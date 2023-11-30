@@ -24,10 +24,13 @@ public class Asset
 {
     public required string Id { get; set; }
     public required string Path { get; set; }
+    public required string Name { get; set; }
+
     public required long Size { get; set; }
     public required string Hash { get; set; }
     public required DateTimeOffset FileCreated { get; set; }
     public required DateTimeOffset FileModified { get; set; }
+
     public required string FileExtension { get; set; }
 
     public required string VaultId { get; set; }

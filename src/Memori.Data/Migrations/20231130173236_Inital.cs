@@ -43,6 +43,7 @@ namespace Memori.Data.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Path = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Size = table.Column<long>(type: "bigint", nullable: false),
                     Hash = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     FileCreated = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: false),
