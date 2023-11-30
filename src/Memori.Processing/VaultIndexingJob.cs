@@ -61,8 +61,6 @@ public sealed class VaultIndexingJob
 
         _logger.LogInformation($"Indexing directory [{directory.FullName}], asset path [{assetPath}].");
 
-        var transaction = await _database.Database.BeginTransactionAsync();
-
         var assets = await _database.GetAssetsByPathAsync(vault.Id, assetPath);
 
         foreach (var file in directory.EnumerateFiles("*", SearchOption.TopDirectoryOnly))
@@ -92,17 +90,16 @@ public sealed class VaultIndexingJob
             }
             else
             {
-                _logger.LogInformation($"Asset [{file.Name}] found. Updating asset.");
+                _logger.LogInformation($"Asset [{file.Name}] found, ignoring.");
 
-                asset.Size = file.Length;
-                asset.FileCreated = file.CreationTimeUtc;
-                asset.FileModified = file.LastWriteTimeUtc;
-                asset.FileExtension = file.Extension;
+                // TODO: Detect changes to file and update asset
+
+                //asset.Size = file.Length;
+                //asset.FileCreated = file.CreationTimeUtc;
+                //asset.FileModified = file.LastWriteTimeUtc;
             }
 
             await _database.SaveChangesAsync();
         }
-
-        transaction.Commit();
     }
 }
