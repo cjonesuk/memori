@@ -1,6 +1,4 @@
 using Memori.ServiceDefaults;
-using Microsoft.EntityFrameworkCore.Design;
-using Microsoft.EntityFrameworkCore;
 
 var builder = DistributedApplication.CreateBuilder(args);
 
