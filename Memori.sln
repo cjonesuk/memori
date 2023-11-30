@@ -12,6 +12,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memori.Web", "src\Memori.We
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memori.Data", "src\Memori.Data\Memori.Data.csproj", "{3547F02F-846A-4AF4-AFAE-6364D90522DA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memori.Processing", "src\Memori.Processing\Memori.Processing.csproj", "{678A1519-EF08-4E53-A34E-8EA1A0D18992}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -38,6 +40,10 @@ Global
 		{3547F02F-846A-4AF4-AFAE-6364D90522DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3547F02F-846A-4AF4-AFAE-6364D90522DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3547F02F-846A-4AF4-AFAE-6364D90522DA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{678A1519-EF08-4E53-A34E-8EA1A0D18992}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{678A1519-EF08-4E53-A34E-8EA1A0D18992}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{678A1519-EF08-4E53-A34E-8EA1A0D18992}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{678A1519-EF08-4E53-A34E-8EA1A0D18992}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

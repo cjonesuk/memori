@@ -32,12 +32,13 @@ public sealed class ProcessingManagerBackgroundService : BackgroundService
         {
             try
             {
-                if(request is VaulProcessingJobDescription vaultProcessingJobDescription)
+                if (request is VaulProcessingJobDescription vaultProcessingJobDescription)
                 {
                     _logger.LogInformation($"Processing vault {vaultProcessingJobDescription.VaultId}...");
 
                     using var scope = _serviceProvider.CreateScope();
-                    var job = scope.ServiceProvider.GetRequiredService<ProcessingJob>();
+
+                    var job = ActivatorUtilities.CreateInstance<ProcessingJob>(scope.ServiceProvider, vaultProcessingJobDescription);
 
                     await job.RunAsync();
                 }

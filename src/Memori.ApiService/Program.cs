@@ -1,8 +1,8 @@
-using Memori.ApiService;
 using Memori.ApiService.Jobs;
 using Memori.ServiceDefaults;
 using Memori.Processing;
 using Microsoft.AspNetCore.Mvc;
+using Memori.Data;
 
 Console.WriteLine("Current directory: " + Directory.GetCurrentDirectory());
 

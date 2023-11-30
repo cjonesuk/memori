@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Memori.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Memori.ApiService.Jobs;
 

@@ -1,4 +1,4 @@
-﻿namespace Memori.ApiService;
+﻿namespace Memori.Data;
 
 using Microsoft.EntityFrameworkCore;
 

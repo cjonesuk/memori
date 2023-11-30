@@ -1,8 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore;
-using Memori.ApiService;
 
-namespace Memori.AppHost;
+namespace Memori.Data;
 
 
 public class DatabaseContextFactory : IDesignTimeDbContextFactory<DatabaseContext>

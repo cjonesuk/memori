@@ -11,7 +11,6 @@ public static class Extensions
         services.AddSingleton<IHostedService, ProcessingManagerBackgroundService>(
                    serviceProvider => serviceProvider.GetRequiredService<ProcessingManagerBackgroundService>());
 
-        services.AddTransient<ProcessingJob>();
 
         return services;
     }
