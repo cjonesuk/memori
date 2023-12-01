@@ -67,22 +67,32 @@ public sealed class VaultIndexingJob
         {
             // TODO: filter out non-image files
 
+            if (!AssetUtilities.IsImageFile(file))
+            {
+                _logger.LogInformation($"File [{file.Name}] is not a supported image file, ignoring.");
+                continue;
+            }
+
             var asset = assets.Find(a => a.Name == file.Name);
 
             if (asset == null)
             {
                 _logger.LogInformation($"Asset [{file.Name}] not found. Creating new asset.");
 
+                var metadata = await AssetUtilities.ExtractMetadata(file);
+                var hash = await AssetUtilities.HashFileContents(file);
+
+
                 asset = new Asset
                 {
                     Id = Guid.NewGuid().ToString(),
-                    Name = file.Name,
+                    Name = metadata.Name,
                     Path = assetPath,
-                    Size = file.Length,
-                    Hash = string.Empty,
-                    FileCreated = file.CreationTimeUtc,
-                    FileModified = file.LastWriteTimeUtc,
-                    FileExtension = file.Extension,
+                    Size = metadata.Size,
+                    Hash = hash.Value,
+                    FileCreated = metadata.Created,
+                    FileModified = metadata.Modified,
+                    FileExtension = metadata.FileExtension,
                     VaultId = vault.Id,
                 };
 

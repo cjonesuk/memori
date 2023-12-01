@@ -1,4 +1,5 @@
 ﻿using Memori.Data;
+using Memori.Processing;
 using Microsoft.EntityFrameworkCore;
 
 namespace Memori.ApiService.Jobs;
@@ -7,11 +8,13 @@ public sealed class DataMigrationJob
 {
     private readonly ILogger _logger;
     private readonly DatabaseContext _database;
+    private readonly IProcessingManagerBackgroundService _processingManager;
 
-    public DataMigrationJob(ILogger<DataMigrationJob> logger, DatabaseContext database)
+    public DataMigrationJob(ILogger<DataMigrationJob> logger, DatabaseContext database, IProcessingManagerBackgroundService processingManager)
     {
-        _logger = logger;        
+        _logger = logger;
         _database = database;
+        _processingManager = processingManager;
     }
 
     public async Task RunAsync()
@@ -19,7 +22,7 @@ public sealed class DataMigrationJob
         _logger.LogInformation("Migrating the database...");
 
         await _database.Database.MigrateAsync();
-        
+
         _logger.LogInformation("Database migrated.");
 
 
@@ -52,6 +55,9 @@ public sealed class DataMigrationJob
             await _database.SaveChangesAsync();
 
             _logger.LogInformation("Database seeded.");
+
+            _logger.LogInformation("Requesting processing job for all vaults...");
+            _processingManager.RequestIndexAllVaults();
         }
     }
 }
