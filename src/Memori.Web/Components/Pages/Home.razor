@@ -1,6 +1,5 @@
 ﻿@page "/"
 @using Memori.Shared
-@rendermode InteractiveWebAssembly
 @inject MemoriApiClient Api
 
 <PageTitle>Home</PageTitle>
@@ -9,68 +8,7 @@
 
 Welcome to Memori!
 
-<h2>Vaults</h2>
-
-@if (vaults == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Name</th>
-                <th>View</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var vault in vaults)
-            {
-                <tr>
-                    <td>@vault.Id</td>
-                    <td>@vault.Name</td>
-                    <td><button @onclick="HandleClick">View</button></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-
-
-@if(vault != null)
-{
-    <h2>Vault @vault.Name (@vault.Id)</h2>
-    <div>
-        @foreach(var item in vault.Assets)
-        {
-            <div>
-                <h3>@item.Id</h3>
-                <p>@item.Url</p>
-            </div>
-        }
-    </div>
-}
 
 @code {
-    private VaultSummaryDto[]? vaults;
-    private VaultDto? vault;
 
-    protected override async Task OnInitializedAsync()
-    {
-        vaults = await Api.GetVaultsAsync();
-    }
-
-    private void HandleClick()
-    {
-        Console.WriteLine("Clicked!");
-    
-    }
-
-    private async Task ViewVaultAsync(VaultSummaryDto selected)
-    {
-        Console.WriteLine($"Viewing vault {selected.Id}");
-        vault = await Api.GetVaultAsync(selected.Id);
-    }
 }

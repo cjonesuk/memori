@@ -14,7 +14,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memori.Data", "src\Memori.D
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memori.Processing", "src\Memori.Processing\Memori.Processing.csproj", "{678A1519-EF08-4E53-A34E-8EA1A0D18992}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Memori.Shared", "src\Memori.Shared\Memori.Shared.csproj", "{25BD6324-33E8-4E3F-8EC6-E1F38B6F0084}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memori.Shared", "src\Memori.Shared\Memori.Shared.csproj", "{25BD6324-33E8-4E3F-8EC6-E1F38B6F0084}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Memori.WebClient", "src\Memori.WebClient\Memori.WebClient.csproj", "{04FEEA79-014E-46D3-BF2D-525AF3270B4B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -50,6 +52,10 @@ Global
 		{25BD6324-33E8-4E3F-8EC6-E1F38B6F0084}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{25BD6324-33E8-4E3F-8EC6-E1F38B6F0084}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{25BD6324-33E8-4E3F-8EC6-E1F38B6F0084}.Release|Any CPU.Build.0 = Release|Any CPU
+		{04FEEA79-014E-46D3-BF2D-525AF3270B4B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04FEEA79-014E-46D3-BF2D-525AF3270B4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04FEEA79-014E-46D3-BF2D-525AF3270B4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04FEEA79-014E-46D3-BF2D-525AF3270B4B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
