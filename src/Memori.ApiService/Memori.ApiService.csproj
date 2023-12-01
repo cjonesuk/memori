@@ -11,6 +11,7 @@
     <ProjectReference Include="..\Memori.Data\Memori.Data.csproj" />
     <ProjectReference Include="..\Memori.Processing\Memori.Processing.csproj" />
     <ProjectReference Include="..\Memori.ServiceDefaults\Memori.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\Memori.Shared\Memori.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

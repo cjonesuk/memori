@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Memori.ServiceDefaults\Memori.ServiceDefaults.csproj" />
+    <ProjectReference Include="..\Memori.Shared\Memori.Shared.csproj" />
   </ItemGroup>
 
 </Project>

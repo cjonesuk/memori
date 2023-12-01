@@ -15,4 +15,11 @@ public static class VaultExtensions
 
         return vaults;
     }
+
+    public static async Task<List<Asset>> GetAssetsByVault(this DatabaseContext database, string vaultId)
+    {
+        var assets = await database.Assets.Where(asset => asset.VaultId == vaultId).ToListAsync();
+
+        return assets;
+    }
 }

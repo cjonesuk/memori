@@ -1,4 +1,5 @@
 using Memori.ApiService.Jobs;
+using Memori.ApiService.Vaults;
 using Memori.Data;
 using Memori.Processing;
 using Memori.ServiceDefaults;
@@ -66,6 +67,8 @@ app.MapGet(
         return forecast;
     }
 );
+
+app.MapVaultEndpoints();
 
 
 app.MapPost("/import", (IProcessingManagerBackgroundService processingManager) =>
