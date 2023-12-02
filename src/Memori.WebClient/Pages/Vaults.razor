@@ -48,6 +48,7 @@ else
             <div>
                 <h3>@item.Id</h3>
                 <p>@item.Url</p>
+                <img src="@item.Url" />
             </div>
         }
     </div>
@@ -70,12 +71,6 @@ else
             Console.WriteLine("Failed to load vaults");
             Console.WriteLine(ex);
         }
-    }
-
-    private void HandleClick()
-    {
-        Console.WriteLine("Clicked!");
-    
     }
 
     private async Task ViewVaultAsync(VaultSummaryDto selected)

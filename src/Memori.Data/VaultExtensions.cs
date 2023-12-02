@@ -22,4 +22,11 @@ public static class VaultExtensions
 
         return assets;
     }
+
+    public static async Task<Asset?> FindAssetByIdAsync(this DatabaseContext database, string vaultId, string assetId)
+    {
+        var asset = await database.Assets.Include(x => x.Vault).FirstOrDefaultAsync(a => a.VaultId == vaultId && a.Id == assetId);
+
+        return asset;
+    }
 }

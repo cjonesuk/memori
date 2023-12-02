@@ -33,6 +33,13 @@ builder.Services.AddCors(options =>
         });
 });
 
+builder.Services.AddTransient<ILogger>(p =>
+{
+    var loggerFactory = p.GetRequiredService<ILoggerFactory>();
+    // You could also use the HttpContext to make the name dynamic for example
+    return loggerFactory.CreateLogger("api-logger");
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
