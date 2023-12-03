@@ -54,8 +54,10 @@ public sealed class GenerateThumbnailsJob
 
         _logger.LogInformation($"Generating thumbnails for asset {asset.Id}.");
 
+        var thumbnailName = $"{asset.Id}.thumb.jpg";
+
         var filePath = Path.Combine(vault.OriginalsPath, asset.Path, asset.Name);
-        var thumbnailFilePath = Path.Combine("../../data/thumbnails", $"{asset.Id}.thumb.jpg");
+        var thumbnailFilePath = Path.Combine("../../data/thumbnails", thumbnailName);
 
         var file = new FileInfo(filePath);
 
@@ -75,6 +77,12 @@ public sealed class GenerateThumbnailsJob
             // TODO: unhappy path
         }
 
+        if (thumbnailFile.Directory is not null)
+        {
+            _logger.LogInformation($"Creating directory {thumbnailFile.Directory.FullName}.");
+            thumbnailFile.Directory.Create();
+        }
+
         // use image magic to generate thumbnails
         var result = await GenerateThumbnail(file, thumbnailFile);
 
@@ -85,6 +93,11 @@ public sealed class GenerateThumbnailsJob
         }
 
         _logger.LogInformation($"Generated thumbnail for asset {asset.Id}.");
+
+        asset.ThumbnailPath = thumbnailName;
+
+        _logger.LogDebug("Saving thumbnail path to database.");
+        await _database.SaveChangesAsync();
     }
 
     protected enum ThumbnailResult
@@ -97,23 +110,31 @@ public sealed class GenerateThumbnailsJob
     {
         // TODO: Security policy for ImageMagick
 
+
+
         using var image = new MagickImage(file);
 
-        var profile = image.GetExifProfile();
+        var size = new MagickGeometry(200, 200);
+        size.IgnoreAspectRatio = false;
 
-        if (profile is null)
-        {
-            _logger.LogError($"File {file.FullName} does not contain an exif profile, unable to generate thumbnail.");
-            return ThumbnailResult.Failed;
-        }
+        image.Resize(size);
 
-        using var thumbnail = profile.CreateThumbnail();
+        await image.WriteAsync(thumbnailFile);
 
-        // Check if exif profile contains thumbnail and save it
-        if (thumbnail is not null)
-        {
-            await thumbnail.WriteAsync(thumbnailFile);
-        }
+        //var profile = image.GetExifProfile();
+
+        //if (profile is null)
+        //{
+        //    _logger.LogDebug($"File {file.FullName} does not contain an exif profile, unable to generate thumbnail.");
+        //     }
+
+        //using var thumbnail = profile.CreateThumbnail();
+
+        //// Check if exif profile contains thumbnail and save it
+        //if (thumbnail is not null)
+        //{
+        //    await thumbnail.WriteAsync(thumbnailFile);
+        //}
 
         _logger.LogInformation($"Generated thumbnail for file {file.FullName}.");
 

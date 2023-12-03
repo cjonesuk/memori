@@ -11,6 +11,7 @@ public static class VaultEndpoints
         endpoints.MapGet("/vaults", GetVaults);
         endpoints.MapGet("/vaults/{vaultId}", GetVault);
         endpoints.MapGet("/vaults/{vaultId}/assets/{assetId}/data", GetAssetFileContentAsync);
+        endpoints.MapGet("/vaults/{vaultId}/assets/{assetId}/thumbnail", GetAssetFileThumbnailContentAsync);
     }
 
     public static async Task<VaultDto> GetVault([FromServices] DatabaseContext database, HttpRequest request, [FromRoute] string vaultId)
@@ -29,8 +30,10 @@ public static class VaultEndpoints
         return new VaultDto(vault.Id, vault.Name, assets.Select(asset =>
         {
             var path = $"/vaults/{vault.Id}/assets/{asset.Id}/data";
+            var thumbnailPath = $"/vaults/{vault.Id}/assets/{asset.Id}/thumbnail";
             var url = request.GenerateUrlFromBase(path);
-            return new AssetSummaryDto(asset.Id, url);
+            var thumbnailUrl = request.GenerateUrlFromBase(thumbnailPath);
+            return new AssetSummaryDto(asset.Id, url, thumbnailUrl);
         }).ToArray());
 
     }
@@ -40,6 +43,29 @@ public static class VaultEndpoints
         var vaults = await database.FindAllVaultsAsync();
 
         return vaults.Select(vault => new VaultSummaryDto(vault.Id, vault.Name));
+    }
+
+    public static async Task<IResult> GetAssetFileThumbnailContentAsync(
+        [FromServices] DatabaseContext database,
+        [FromServices] ILogger logger,
+        [FromRoute] string vaultId,
+        [FromRoute] string assetId)
+    {
+        var asset = await database.FindAssetByIdAsync(vaultId, assetId);
+
+        if (asset == null || asset.ThumbnailPath == null)
+        {
+            return Results.NotFound();
+        }
+
+        var path = Path.Combine("../../data/thumbnails", asset.ThumbnailPath);
+
+        logger.LogInformation($"Vault thumbnail path {asset.ThumbnailPath}");
+        logger.LogInformation($"Asset thumbnail file path {path}");
+
+        var stream = File.OpenRead(path);
+
+        return Results.File(stream, contentType: "image/jpeg");
     }
 
     public static async Task<IResult> GetAssetFileContentAsync(
