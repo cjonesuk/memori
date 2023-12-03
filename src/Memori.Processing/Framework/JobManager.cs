@@ -1,26 +1,27 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Memori.Processing.Indexing;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System.Threading.Channels;
 
 namespace Memori.Processing;
 
-public sealed class ProcessingManagerBackgroundService : BackgroundService, IProcessingManagerBackgroundService
+public sealed class JobManager : BackgroundService, IJobManager
 {
     private readonly ILogger _logger;
     private readonly ILogger _requestLogger;
     private readonly IServiceProvider _serviceProvider;
     private readonly Channel<JobRequest> _requests;
 
-    public ProcessingManagerBackgroundService(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
+    public JobManager(ILoggerFactory loggerFactory, IServiceProvider serviceProvider)
     {
-        _logger = loggerFactory.CreateLogger<ProcessingManagerBackgroundService>();
-        _requestLogger = loggerFactory.CreateLogger<ProcessingManagerBackgroundService>();
+        _logger = loggerFactory.CreateLogger<JobManager>();
+        _requestLogger = loggerFactory.CreateLogger<JobManager>();
         _serviceProvider = serviceProvider;
         _requests = Channel.CreateUnbounded<JobRequest>();
     }
 
-    public bool RequestJob(IProcessingJobDescription jobDescription)
+    public bool RequestJob(IJobDescription jobDescription)
     {
         var request = new JobRequest(Guid.NewGuid(), jobDescription);
 
@@ -49,11 +50,11 @@ public sealed class ProcessingManagerBackgroundService : BackgroundService, IPro
             {
                 switch (request.Description)
                 {
-                    case VaultIndexingJobDescription job:
+                    case IndexVaultJobDescription job:
                         await RunVaultProcessingJob(job);
                         break;
 
-                    case ProcessAllVaultsJobDescription job:
+                    case IndexAllVaultsJobDescription job:
                         await ProcessAllVaults(job);
                         break;
 
@@ -69,20 +70,20 @@ public sealed class ProcessingManagerBackgroundService : BackgroundService, IPro
         }
     }
 
-    private async Task ProcessAllVaults(ProcessAllVaultsJobDescription description)
+    private async Task ProcessAllVaults(IndexAllVaultsJobDescription description)
     {
         using var scope = _serviceProvider.CreateScope();
 
-        var job = ActivatorUtilities.CreateInstance<ProcessAllVaultsJob>(scope.ServiceProvider, description);
+        var job = ActivatorUtilities.CreateInstance<IndexAllVaultsJob>(scope.ServiceProvider, description);
 
         await job.RunAsync();
     }
 
-    private async Task RunVaultProcessingJob(VaultIndexingJobDescription description)
+    private async Task RunVaultProcessingJob(IndexVaultJobDescription description)
     {
         using var scope = _serviceProvider.CreateScope();
 
-        var job = ActivatorUtilities.CreateInstance<VaultIndexingJob>(scope.ServiceProvider, description);
+        var job = ActivatorUtilities.CreateInstance<IndexVaultJob>(scope.ServiceProvider, description);
 
         await job.RunAsync();
     }

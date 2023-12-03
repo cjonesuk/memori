@@ -1,15 +1,15 @@
 ﻿using Memori.Data;
 using Microsoft.Extensions.Logging;
 
-namespace Memori.Processing;
+namespace Memori.Processing.Indexing;
 
-public sealed class VaultIndexingJob
+public sealed class IndexVaultJob
 {
     private readonly ILogger _logger;
-    private readonly VaultIndexingJobDescription _description;
+    private readonly IndexVaultJobDescription _description;
     private readonly DatabaseContext _database;
 
-    public VaultIndexingJob(ILogger<VaultIndexingJob> logger, VaultIndexingJobDescription description, DatabaseContext database)
+    public IndexVaultJob(ILogger<IndexVaultJob> logger, IndexVaultJobDescription description, DatabaseContext database)
     {
         _logger = logger;
         _description = description;

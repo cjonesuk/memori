@@ -2,7 +2,7 @@
 
 namespace Memori.Processing;
 
-public static partial class ProcessingLogs
+public static partial class JobManagerLogs
 {
     [LoggerMessage(LogLevel.Information, "Add request for job [{jobRequestId}]")]
     public static partial void LogJobRequest(this ILogger logger, Guid jobRequestId);

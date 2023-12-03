@@ -2,6 +2,7 @@ using Memori.ApiService.Jobs;
 using Memori.ApiService.Vaults;
 using Memori.Data;
 using Memori.Processing;
+using Memori.Processing.Indexing;
 using Memori.ServiceDefaults;
 
 Console.WriteLine("Current directory: " + Directory.GetCurrentDirectory());
@@ -19,7 +20,7 @@ builder.AddSqlServerDbContext<DatabaseContext>(Constants.SqlServerDatabase);
 
 builder.Services.AddTransient<DataMigrationJob>();
 
-builder.Services.AddProcessingManager();
+builder.Services.AddJobManager();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -57,9 +58,9 @@ app.UseCors();
 
 app.MapVaultEndpoints();
 
-app.MapPost("/import", (IProcessingManagerBackgroundService processingManager) =>
+app.MapPost("/import", (IJobManager processingManager) =>
 {
-    var success = processingManager.RequestJob(new ProcessAllVaultsJobDescription());
+    var success = processingManager.RequestJob(new IndexAllVaultsJobDescription());
 
     if (!success)
     {

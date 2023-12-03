@@ -1,6 +1,6 @@
 using System.Security.Cryptography;
 
-namespace Memori.Processing;
+namespace Memori.Processing.Indexing;
 
 public static class AssetUtilities
 {

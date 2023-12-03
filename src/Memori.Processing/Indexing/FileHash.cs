@@ -1,4 +1,4 @@
-namespace Memori.Processing;
+namespace Memori.Processing.Indexing;
 
 public class FileHash
 {

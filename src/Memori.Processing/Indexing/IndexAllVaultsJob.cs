@@ -1,20 +1,20 @@
 ﻿using Memori.Data;
 using Microsoft.Extensions.Logging;
 
-namespace Memori.Processing;
+namespace Memori.Processing.Indexing;
 
-public sealed class ProcessAllVaultsJob
+public sealed class IndexAllVaultsJob
 {
     private readonly ILogger _logger;
-    private readonly ProcessAllVaultsJobDescription _description;
+    private readonly IndexAllVaultsJobDescription _description;
     private readonly DatabaseContext _database;
-    private readonly IProcessingManagerBackgroundService _processingManager;
+    private readonly IJobManager _processingManager;
 
-    public ProcessAllVaultsJob(
-        ILogger<ProcessAllVaultsJob> logger,
-        ProcessAllVaultsJobDescription description,
+    public IndexAllVaultsJob(
+        ILogger<IndexAllVaultsJob> logger,
+        IndexAllVaultsJobDescription description,
         DatabaseContext database,
-        IProcessingManagerBackgroundService processingManager)
+        IJobManager processingManager)
     {
         _logger = logger;
         _description = description;
@@ -32,7 +32,7 @@ public sealed class ProcessAllVaultsJob
         {
             _logger.LogDebug($"Processing vault {vault.Id}.");
 
-            var jobDescription = new VaultIndexingJobDescription(vault.Id);
+            var jobDescription = new IndexVaultJobDescription(vault.Id);
 
             var success = _processingManager.RequestJob(jobDescription);
 
