@@ -3,48 +3,32 @@ using Microsoft.Extensions.Logging;
 
 namespace Memori.Processing.Indexing;
 
-public sealed class IndexAllVaultsJob
+public sealed class IndexAllVaultsJob : PerVaultJobBase
 {
-    private readonly ILogger _logger;
-    private readonly IndexAllVaultsJobDescription _description;
-    private readonly DatabaseContext _database;
-    private readonly IJobManager _processingManager;
+    private readonly IJobManager jobManager;
 
     public IndexAllVaultsJob(
         ILogger<IndexAllVaultsJob> logger,
-        IndexAllVaultsJobDescription description,
         DatabaseContext database,
-        IJobManager processingManager)
+        IJobManager jobManager,
+        IndexAllVaultsJobDescription description) : base(logger, database)
     {
-        _logger = logger;
-        _description = description;
-        _database = database;
-        _processingManager = processingManager;
+        this.jobManager = jobManager;
     }
 
-    public async Task RunAsync()
+    protected override Task<Result> ProcessVaultAsync(Vault vault)
     {
-        _logger.LogInformation($"Processing job is running...");
+        var jobDescription = new IndexVaultJobDescription(vault.Id);
 
-        var vaults = await _database.FindAllVaultsAsync();
+        var success = jobManager.RequestJob(jobDescription);
 
-        foreach (var vault in vaults)
+        if (!success)
         {
-            _logger.LogDebug($"Processing vault {vault.Id}.");
-
-            var jobDescription = new IndexVaultJobDescription(vault.Id);
-
-            var success = _processingManager.RequestJob(jobDescription);
-
-            if (!success)
-            {
-                _logger.LogError($"Failed to create processing job for vault {vault.Id}.");
-                _logger.LogError($"Aborting processing job for all vaults.");
-                return;
-            }
+            _logger.LogError($"Failed to create processing job for vault {vault.Id}.");
+            _logger.LogError($"Aborting processing job for all vaults.");
+            return Task.FromResult(Result.Stop);
         }
 
-        _logger.LogInformation($"Processing job for all vaults is done.");
-
+        return Task.FromResult(Result.Continue);
     }
 }

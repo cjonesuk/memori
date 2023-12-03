@@ -22,19 +22,27 @@ public class Vault
 
 public class Asset
 {
+    public required string VaultId { get; set; }
+    public Vault? Vault { get; set; }
+
     public required string Id { get; set; }
     public required string Path { get; set; }
     public required string Name { get; set; }
+    public required string FileExtension { get; set; }
 
     public required long Size { get; set; }
     public required string Hash { get; set; }
+    // The date that the file was created on the file system
     public required DateTimeOffset FileCreated { get; set; }
+
+    // the date that the file was last modified on the file system
     public required DateTimeOffset FileModified { get; set; }
 
-    public required string FileExtension { get; set; }
+    // Date that then image was created or the photo was taken
+    public required DateTimeOffset Created { get; set; }
 
-    public required string VaultId { get; set; }
-    public Vault? Vault { get; set; }
+    public string? ThumbnailPath { get; set; }
+
 }
 
 public class DatabaseContext : DbContext

@@ -1,4 +1,5 @@
 ﻿using Memori.Processing.Indexing;
+using Memori.Processing.Thumbnails;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -48,20 +49,7 @@ public sealed class JobManager : BackgroundService, IJobManager
 
             try
             {
-                switch (request.Description)
-                {
-                    case IndexVaultJobDescription job:
-                        await RunVaultProcessingJob(job);
-                        break;
-
-                    case IndexAllVaultsJobDescription job:
-                        await ProcessAllVaults(job);
-                        break;
-
-                    default:
-                        _logger.LogWarning($"Unknown job description type {request.GetType().Name}.");
-                        break;
-                }
+                await RunJob(request.Description);
             }
             catch (Exception e)
             {
@@ -70,7 +58,18 @@ public sealed class JobManager : BackgroundService, IJobManager
         }
     }
 
-    private async Task ProcessAllVaults(IndexAllVaultsJobDescription description)
+    private Task RunJob(IJobDescription description)
+    {
+        return description switch
+        {
+            IndexVaultJobDescription job => RunIndexVaultJob(job),
+            IndexAllVaultsJobDescription job => RunIndexAllVaultsJob(job),
+            GenerateThumbnailsJobDescription job => RunThumbnailGenerationJob(job),
+            _ => throw new ArgumentException($"Unknown job description type {description.GetType().Name}.", nameof(description)),
+        };
+    }
+
+    private async Task RunIndexAllVaultsJob(IndexAllVaultsJobDescription description)
     {
         using var scope = _serviceProvider.CreateScope();
 
@@ -79,11 +78,20 @@ public sealed class JobManager : BackgroundService, IJobManager
         await job.RunAsync();
     }
 
-    private async Task RunVaultProcessingJob(IndexVaultJobDescription description)
+    private async Task RunIndexVaultJob(IndexVaultJobDescription description)
     {
         using var scope = _serviceProvider.CreateScope();
 
         var job = ActivatorUtilities.CreateInstance<IndexVaultJob>(scope.ServiceProvider, description);
+
+        await job.RunAsync();
+    }
+
+    private async Task RunThumbnailGenerationJob(GenerateThumbnailsJobDescription description)
+    {
+        using var scope = _serviceProvider.CreateScope();
+
+        var job = ActivatorUtilities.CreateInstance<GenerateThumbnailsJob>(scope.ServiceProvider, description);
 
         await job.RunAsync();
     }

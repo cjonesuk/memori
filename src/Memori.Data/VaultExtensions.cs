@@ -29,4 +29,11 @@ public static class VaultExtensions
 
         return asset;
     }
+
+    public static async Task<List<Asset>> FindAssetsWithoutThumbnails(this DatabaseContext database, string vaultId)
+    {
+        var assets = await database.Assets.Where(asset => asset.VaultId == vaultId && asset.ThumbnailPath == null).ToListAsync();
+
+        return assets;
+    }
 }
